@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELMANI MOHAMED | Mechatronic Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+</head>
+<body class="blueprint-bg">
+    <div class="scanner-line"></div>
+    <div class="noise"></div>
+    
+    <div class="layout">
+        <!-- Sidebar Terminal -->
+        <aside class="sidebar terminal">
+            <div class="terminal-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+                <span class="terminal-title">lab-terminal.sh</span>
+            </div>
+            <div class="terminal-body" id="terminal-output">
+                <div class="command-line">
+                    <span class="prompt">guest@mechatronic:~$</span>
+                    <span class="command">ls ./projects</span>
+                </div>
+                <nav class="project-list" id="project-nav">
+                    <!-- Projects will be injected here -->
+                </nav>
+                <div class="command-line active">
+                    <span class="prompt">guest@mechatronic:~$</span>
+                    <span class="cursor">_</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Lab View -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="logo-container">
+                    <h1 class="glitch" data-text="SELMANI MOHAMED">SELMANI MOHAMED</h1>
+                    <p class="subtitle">// ÉTUDIANT INGÉNIEUR EN MÉCATRONIQUE & IA</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item"><span class="label">STATUS:</span> <span class="value">ACTIVE_LAB</span></div>
+                    <div class="stat-item"><span class="label">LOCATION:</span> <span class="value">FRANCE</span></div>
+                    <div class="stat-item"><span class="label">SYSTEM:</span> <span class="value">V2.0.4C</span></div>
+                </div>
+            </header>
+
+            <section class="project-display" id="project-display">
+                <div class="empty-state">
+                    <div class="schematic-empty"></div>
+                    <h2>SYSTEM READY</h2>
+                    <p>Select a project from the terminal to view technical specifications.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

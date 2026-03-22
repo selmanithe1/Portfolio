@@ -1,0 +1,518 @@
+:root {
+  --bg-color: #050a14;
+  --blueprint-line: rgba(46, 115, 232, 0.15);
+  --blueprint-grid: rgba(46, 115, 232, 0.05);
+  --accent-color: #34e1ff; /* Neon Cyan */
+  --highlight-color: #ff3a3a; /* Warning Red */
+  --terminal-bg: rgba(10, 20, 40, 0.85);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --font-main: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: #fff;
+  font-family: var(--font-main);
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+/* --- Blueprint Background --- */
+.blueprint-bg {
+  background-image: 
+    linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px),
+    linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-attachment: fixed;
+}
+
+/* --- Noise and Scanline --- */
+.noise {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.scanner-line {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 5px;
+  background: linear-gradient(to bottom, transparent, var(--accent-color), transparent);
+  opacity: 0.1;
+  animation: scan 8s linear infinite;
+  z-index: 99;
+}
+
+@keyframes scan {
+  from { transform: translateY(-100px); }
+  to { transform: translateY(110vh); }
+}
+
+/* --- Layout --- */
+.layout {
+  display: flex;
+  height: 100vh;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* --- Terminal Sidebar --- */
+.sidebar.terminal {
+  width: 350px;
+  background: var(--terminal-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(52, 225, 255, 0.05);
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.terminal-header {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.red { background: #ff5f56; }
+.yellow { background: #ffbd2e; }
+.green { background: #27c93f; }
+
+.terminal-title {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  opacity: 0.5;
+  letter-spacing: 1px;
+}
+
+.terminal-body {
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.prompt { color: var(--highlight-color); margin-right: 8px; }
+.command { color: #fff; }
+
+.project-list {
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-item {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-left: 2px solid transparent;
+  transition: var(--transition);
+  opacity: 0.7;
+}
+
+.project-item:hover {
+  background: rgba(52, 225, 255, 0.1);
+  opacity: 1;
+  border-left-color: var(--accent-color);
+  padding-left: 20px;
+}
+
+.project-item.active {
+  background: rgba(52, 225, 255, 0.15);
+  opacity: 1;
+  border-left-color: var(--accent-color);
+  font-weight: bold;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: var(--accent-color);
+  animation: blink 1s infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+/* --- Main Content --- */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 1rem;
+}
+
+.glitch {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  position: relative;
+  color: #fff;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  letter-spacing: 2px;
+}
+
+.header-stats {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.stat-item { margin-bottom: 4px; }
+.stat-item .label { opacity: 0.4; }
+.stat-item .value { color: var(--accent-color); }
+
+/* --- Project Display --- */
+.project-display {
+  flex-grow: 1;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 2.5rem;
+  position: relative;
+  overflow-y: auto;
+}
+
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.2;
+}
+
+.schematic-empty {
+  width: 200px;
+  height: 150px;
+  border: 2px dashed var(--accent-color);
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.schematic-empty::after {
+  content: 'NO_DATA';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+/* --- Project Content --- */
+.project-content {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.project-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.skill-cat h4 { font-size: 0.7rem; opacity: 0.5; margin-bottom: 0.8rem; text-transform: uppercase; }
+
+.action-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.github-btn {
+    background: rgba(52, 225, 255, 0.1);
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 5px 15px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.github-btn:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 15px rgba(52, 225, 255, 0.4);
+}
+
+/* --- Dashboard Items --- */
+.dash-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+}
+
+.dash-title { font-weight: bold; font-size: 1rem; color: #fff; }
+.dash-date { font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.5; }
+.dash-sub { color: var(--accent-color); font-size: 0.8rem; font-weight: 300; margin-bottom: 0.5rem; }
+.dash-desc { font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.8rem; }
+
+.dash-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.5rem;
+}
+
+.tool-tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Tool Tag Colors */
+.tool-tag.color-0 { background: rgba(52, 225, 255, 0.15); color: #34e1ff; border: 1px solid rgba(52, 225, 255, 0.3); }
+.tool-tag.color-1 { background: rgba(255, 58, 58, 0.15); color: #ff3a3a; border: 1px solid rgba(255, 58, 58, 0.3); }
+.tool-tag.color-2 { background: rgba(39, 201, 63, 0.15); color: #27c93f; border: 1px solid rgba(39, 201, 63, 0.3); }
+.tool-tag.color-3 { background: rgba(255, 189, 46, 0.15); color: #ffbd2e; border: 1px solid rgba(255, 189, 46, 0.3); }
+.tool-tag.color-4 { background: rgba(162, 89, 255, 0.15); color: #a259ff; border: 1px solid rgba(162, 89, 255, 0.3); }
+
+    /* Media & PDF Layout */
+    .project-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 2rem;
+        height: calc(100vh - 250px);
+    }
+
+    .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        overflow-y: auto;
+    }
+
+    .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* PDF Monitor Frame */
+    .pdf-viewer-container {
+        flex-grow: 1;
+        background: #000;
+        border: 4px solid #1a1a1a;
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 100px rgba(52, 225, 255, 0.05);
+    }
+
+    .pdf-viewer-container::before {
+        content: 'SECURE_DOCUMENT_VIEWER // ENCRYPTED_STREAM';
+        position: absolute;
+        top: 0; left: 0; width: 100%;
+        background: #111;
+        color: var(--accent-color);
+        font-family: var(--font-mono);
+        font-size: 0.6rem;
+        padding: 4px 10px;
+        z-index: 10;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .pdf-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        padding-top: 25px;
+        filter: invert(0.9) hue-rotate(180deg) brightness(1.1); /* Lab/Dark mode effect for PDFs */
+        transition: var(--transition);
+    }
+
+    .pdf-iframe:hover {
+        filter: none; /* Show real colors on hover */
+    }
+
+    .no-pdf-placeholder {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(circle, rgba(52, 225, 255, 0.02) 0%, transparent 70%);
+        color: rgba(255,255,255,0.2);
+        font-family: var(--font-mono);
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .media-gallery {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 1rem;
+        border-radius: 4px;
+    }
+
+    .media-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.8rem;
+    }
+
+    .media-thumbnail {
+        aspect-ratio: 1;
+    }
+
+    .schematic-view {
+        border: 1px solid var(--accent-color);
+        background: rgba(0, 0, 0, 0.4);
+        padding: 10px;
+        position: relative;
+        min-height: 120px;
+    }
+
+.project-title-row h2 {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+}
+
+.category-tag {
+  background: var(--accent-color);
+  color: var(--bg-color);
+  padding: 4px 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 3rem;
+}
+
+.description-box {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border: 1px solid var(--glass-border);
+}
+
+.description-box h3 {
+  font-size: 0.8rem;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.5rem;
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
+.tech-item {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  background: rgba(52, 225, 255, 0.1);
+  padding: 4px 10px;
+  border: 1px solid rgba(52, 225, 255, 0.2);
+}
+
+.files-list {
+  margin-top: 2rem;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.file-item::before {
+  content: '>';
+  color: var(--accent-color);
+}
+
+/* --- Glitch Effect --- */
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 var(--highlight-color);
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-1 5s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 var(--accent-color);
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-1 {
+  0% { clip: rect(10px, 9999px, 9px, 0); }
+  5% { clip: rect(70px, 9999px, 15px, 0); }
+  /* ... simplified glitch ... */
+  100% { clip: rect(67px, 9999px, 62px, 0); }
+}
+
+@keyframes glitch-2 {
+  0% { clip: rect(65px, 9999px, 21px, 0); }
+  5% { clip: rect(20px, 9999px, 85px, 0); }
+  100% { clip: rect(10px, 9999px, 78px, 0); }
+}
