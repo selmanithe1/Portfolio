@@ -1,0 +1,3 @@
+Connecteur 6 pins.
+
+Capteur : UP  ou Down, alimentation 5 Volts, pas de contact => pas de courant I =0 A & contact => Courant I = U/R = 5/ 20 ohms =0,25 A environ (la valeur de résistance du capteur est approximative). C'est un capteur 0 ou 1. Voilà ce que j'ai compris.
